@@ -1,0 +1,51 @@
+# FastAPI and ASGI Server
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6  # For file uploads
+slowapi==0.1.9  # Rate limiting
+
+# Data validation
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# PDF Processing
+pypdf2==3.0.1
+pdfplumber==0.10.3
+PyMuPDF==1.23.8  # fitz - better PDF handling
+python-docx==1.1.0
+
+# NLP and Text Analysis
+spacy==3.7.2
+textstat==0.7.3
+nltk==3.8.1
+
+# AI/LLM Integration
+anthropic==0.18.1  # Claude API
+tenacity==8.2.3  # Retry logic with exponential backoff
+
+# PDF Generation
+weasyprint==60.2  # HTML to PDF conversion
+jinja2==3.1.3  # Template engine
+reportlab==4.0.9  # Alternative PDF generation
+
+# Supabase Integration
+supabase==2.3.2
+postgrest==0.14.0
+
+# HTTP Client
+httpx==0.26.0
+requests==2.31.0
+
+# Utilities
+python-dotenv==1.0.0
+pydantic-core==2.14.6
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Logging and Monitoring
+python-json-logger==2.0.7
+
+# Date handling
+python-dateutil==2.8.2

@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}{{ content.name }} - Resume{% endblock %}
+
+{% block template_styles %}
+/* Professional Template - Traditional design with serif fonts and navy accents */
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 11pt;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+h1 {
+    font-family: Georgia, serif;
+    font-size: 28pt;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 6pt;
+    text-align: center;
+}
+
+h2 {
+    font-family: Georgia, serif;
+    font-size: 14pt;
+    font-weight: bold;
+    color: #1f2937;
+    text-transform: uppercase;
+    letter-spacing: 1pt;
+    margin-top: 16pt;
+    margin-bottom: 10pt;
+    padding-bottom: 4pt;
+    border-bottom: 2pt solid #1f2937;
+}
+
+h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.contact-info {
+    text-align: center;
+    margin-bottom: 20pt;
+    border-bottom: 1pt solid #d1d5db;
+    padding-bottom: 12pt;
+}
+
+.contact-line {
+    font-size: 10pt;
+    color: #4b5563;
+    margin-bottom: 3pt;
+}
+
+.contact-item {
+    display: inline-block;
+    margin: 0 10pt;
+}
+
+.contact-divider {
+    color: #9ca3af;
+}
+
+.summary {
+    margin-bottom: 18pt;
+    padding: 12pt;
+    background-color: #f9fafb;
+    border-left: 3pt solid #1f2937;
+    text-align: justify;
+}
+
+.summary p {
+    font-style: italic;
+    color: #374151;
+}
+
+.section {
+    margin-bottom: 18pt;
+}
+
+.experience-entry {
+    margin-bottom: 16pt;
+    page-break-inside: avoid;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4pt;
+    align-items: baseline;
+}
+
+.job-title {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.company-name {
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 2pt;
+}
+
+.job-details {
+    font-size: 10pt;
+    color: #6b7280;
+    font-style: italic;
+    margin-bottom: 6pt;
+}
+
+.date-range {
+    font-size: 10pt;
+    color: #6b7280;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.responsibilities {
+    margin-left: 20pt;
+    margin-top: 6pt;
+}
+
+.responsibilities li {
+    margin-bottom: 5pt;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.education-entry {
+    margin-bottom: 14pt;
+    page-break-inside: avoid;
+}
+
+.degree-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2pt;
+}
+
+.degree {
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.institution {
+    font-style: italic;
+    color: #4b5563;
+    margin-bottom: 2pt;
+}
+
+.education-details {
+    font-size: 10pt;
+    color: #6b7280;
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8pt;
+}
+
+.skill-tag {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    padding: 6pt 12pt;
+    border-radius: 4pt;
+    font-size: 10pt;
+    border: 1pt solid #d1d5db;
+    display: inline-block;
+}
+
+.certification-entry {
+    margin-bottom: 10pt;
+    page-break-inside: avoid;
+}
+
+.cert-name {
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.cert-issuer {
+    color: #4b5563;
+    font-style: italic;
+}
+
+.cert-date {
+    font-size: 10pt;
+    color: #6b7280;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header / Contact Information -->
+    <header class="contact-info">
+        <h1>{{ content.name }}</h1>
+        {% if content.email or content.phone or content.location %}
+        <div class="contact-line">
+            {% if content.email %}
+            <span class="contact-item">{{ content.email }}</span>
+            {% endif %}
+            {% if content.email and content.phone %}
+            <span class="contact-divider">|</span>
+            {% endif %}
+            {% if content.phone %}
+            <span class="contact-item">{{ content.phone }}</span>
+            {% endif %}
+            {% if (content.email or content.phone) and content.location %}
+            <span class="contact-divider">|</span>
+            {% endif %}
+            {% if content.location %}
+            <span class="contact-item">{{ content.location }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if content.linkedin or content.website %}
+        <div class="contact-line">
+            {% if content.linkedin %}
+            <span class="contact-item">{{ content.linkedin }}</span>
+            {% endif %}
+            {% if content.linkedin and content.website %}
+            <span class="contact-divider">|</span>
+            {% endif %}
+            {% if content.website %}
+            <span class="contact-item">{{ content.website }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </header>
+
+    <!-- Professional Summary -->
+    {% if content.summary %}
+    <section class="section">
+        <h2>Professional Summary</h2>
+        <div class="summary">
+            <p>{{ content.summary }}</p>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Professional Experience -->
+    {% if content.experiences and content.experiences|length > 0 %}
+    <section class="section">
+        <h2>Professional Experience</h2>
+        {% for exp in content.experiences %}
+        <div class="experience-entry">
+            <div class="job-header">
+                <div>
+                    <h3 class="job-title">{{ exp.role }}</h3>
+                    {% if exp.company %}
+                    <div class="company-name">{{ exp.company }}</div>
+                    {% endif %}
+                </div>
+                {% if exp.start_date or exp.end_date %}
+                <div class="date-range">
+                    {{ exp.start_date }}{% if exp.end_date %} - {{ exp.end_date }}{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% if exp.location %}
+            <div class="job-details">{{ exp.location }}</div>
+            {% endif %}
+            {% if exp.responsibilities and exp.responsibilities|length > 0 %}
+            <ul class="responsibilities">
+                {% for responsibility in exp.responsibilities %}
+                <li>{{ responsibility }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Education -->
+    {% if content.education and content.education|length > 0 %}
+    <section class="section">
+        <h2>Education</h2>
+        {% for edu in content.education %}
+        <div class="education-entry">
+            <div class="degree-line">
+                <div>
+                    <span class="degree">{{ edu.degree }}</span>
+                    {% if edu.field %}
+                    <span> in {{ edu.field }}</span>
+                    {% endif %}
+                </div>
+                {% if edu.graduation_date %}
+                <span class="date-range">{{ edu.graduation_date }}</span>
+                {% endif %}
+            </div>
+            {% if edu.institution %}
+            <div class="institution">{{ edu.institution }}</div>
+            {% endif %}
+            {% if edu.gpa or edu.honors %}
+            <div class="education-details">
+                {% if edu.gpa %}GPA: {{ edu.gpa }}{% endif %}
+                {% if edu.gpa and edu.honors %} | {% endif %}
+                {% if edu.honors %}{{ edu.honors }}{% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Skills -->
+    {% if content.skills and content.skills|length > 0 %}
+    <section class="section">
+        <h2>Skills</h2>
+        <div class="skills-container">
+            {% for skill in content.skills %}
+            <span class="skill-tag">{{ skill }}</span>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Certifications -->
+    {% if content.certifications and content.certifications|length > 0 %}
+    <section class="section">
+        <h2>Certifications</h2>
+        {% for cert in content.certifications %}
+        <div class="certification-entry">
+            <div class="cert-name">{{ cert.name }}</div>
+            {% if cert.issuer %}
+            <div class="cert-issuer">{{ cert.issuer }}</div>
+            {% endif %}
+            {% if cert.date %}
+            <div class="cert-date">{{ cert.date }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

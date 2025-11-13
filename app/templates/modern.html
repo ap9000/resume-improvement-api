@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}{{ content.name }} - Resume{% endblock %}
+
+{% block template_styles %}
+/* Modern Template - Two-column layout with teal accents and sans-serif fonts */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10pt;
+    color: #2d3748;
+    line-height: 1.5;
+}
+
+.page-container {
+    display: flex;
+    gap: 0;
+}
+
+/* Header spans full width */
+.header-section {
+    background-color: #0d9488;
+    color: #ffffff;
+    padding: 24pt 20pt;
+    margin: -12pt -12pt 20pt -12pt;
+    width: auto;
+}
+
+.header-section h1 {
+    font-size: 26pt;
+    font-weight: 700;
+    margin-bottom: 6pt;
+    color: #ffffff;
+}
+
+.header-subtitle {
+    font-size: 13pt;
+    font-weight: 400;
+    margin-bottom: 10pt;
+    color: #e0f2f1;
+}
+
+.contact-info {
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.contact-line {
+    font-size: 9pt;
+    color: #e0f2f1;
+    margin-bottom: 3pt;
+}
+
+.contact-item {
+    margin-right: 12pt;
+}
+
+/* Two-column layout */
+.sidebar {
+    width: 30%;
+    padding-right: 16pt;
+    border-right: 1pt solid #cbd5e0;
+}
+
+.main-content {
+    width: 70%;
+    padding-left: 16pt;
+}
+
+/* Section styling */
+h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0d9488;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+    margin-top: 16pt;
+    margin-bottom: 10pt;
+    padding-bottom: 4pt;
+    border-bottom: 2pt solid #0d9488;
+}
+
+.sidebar h2 {
+    font-size: 12pt;
+    margin-top: 0;
+}
+
+/* Summary section */
+.summary {
+    margin-bottom: 16pt;
+    line-height: 1.6;
+    color: #4a5568;
+}
+
+/* Experience entries */
+.experience-entry {
+    margin-bottom: 16pt;
+    page-break-inside: avoid;
+}
+
+.job-header {
+    margin-bottom: 4pt;
+}
+
+.job-title {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #0d9488;
+    margin-bottom: 2pt;
+}
+
+.company-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 11pt;
+}
+
+.job-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9pt;
+    color: #718096;
+    font-style: italic;
+    margin-bottom: 6pt;
+}
+
+.responsibilities {
+    margin-left: 16pt;
+    margin-top: 6pt;
+}
+
+.responsibilities li {
+    margin-bottom: 4pt;
+    line-height: 1.5;
+    color: #4a5568;
+}
+
+/* Sidebar sections */
+.sidebar-section {
+    margin-bottom: 18pt;
+    page-break-inside: avoid;
+}
+
+.sidebar-section h2 {
+    font-size: 11pt;
+}
+
+/* Skills */
+.skills-list {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.skill-item {
+    background-color: #e6fffa;
+    color: #0d9488;
+    padding: 5pt 10pt;
+    margin-bottom: 6pt;
+    border-radius: 3pt;
+    font-size: 9pt;
+    font-weight: 600;
+    border-left: 3pt solid #0d9488;
+}
+
+/* Education */
+.education-entry {
+    margin-bottom: 12pt;
+    page-break-inside: avoid;
+}
+
+.degree {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 10pt;
+    margin-bottom: 2pt;
+}
+
+.institution {
+    color: #4a5568;
+    font-size: 9pt;
+    margin-bottom: 2pt;
+}
+
+.edu-date {
+    color: #718096;
+    font-size: 9pt;
+    font-style: italic;
+}
+
+.edu-details {
+    color: #4a5568;
+    font-size: 9pt;
+    margin-top: 2pt;
+}
+
+/* Certifications */
+.certification-entry {
+    margin-bottom: 10pt;
+    padding-bottom: 8pt;
+    border-bottom: 1pt solid #e2e8f0;
+}
+
+.certification-entry:last-child {
+    border-bottom: none;
+}
+
+.cert-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 10pt;
+}
+
+.cert-issuer {
+    color: #4a5568;
+    font-size: 9pt;
+}
+
+.cert-date {
+    color: #718096;
+    font-size: 9pt;
+    font-style: italic;
+}
+
+/* Accent elements */
+.accent-bar {
+    height: 3pt;
+    background-color: #0d9488;
+    margin: 12pt 0;
+}
+{% endblock %}
+
+{% block content %}
+<!-- Header Section (full width) -->
+<header class="header-section">
+    <h1>{{ content.name }}</h1>
+    {% if content.title %}
+    <div class="header-subtitle">{{ content.title }}</div>
+    {% endif %}
+    <div class="contact-info">
+        {% if content.email or content.phone or content.location %}
+        <div class="contact-line">
+            {% if content.email %}<span class="contact-item">{{ content.email }}</span>{% endif %}
+            {% if content.phone %}<span class="contact-item">{{ content.phone }}</span>{% endif %}
+            {% if content.location %}<span class="contact-item">{{ content.location }}</span>{% endif %}
+        </div>
+        {% endif %}
+        {% if content.linkedin or content.website %}
+        <div class="contact-line">
+            {% if content.linkedin %}<span class="contact-item">{{ content.linkedin }}</span>{% endif %}
+            {% if content.website %}<span class="contact-item">{{ content.website }}</span>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+</header>
+
+<!-- Two-column layout -->
+<div class="page-container">
+    <!-- Sidebar (30%) -->
+    <aside class="sidebar">
+        <!-- Skills -->
+        {% if content.skills and content.skills|length > 0 %}
+        <section class="sidebar-section">
+            <h2>Skills</h2>
+            <ul class="skills-list">
+                {% for skill in content.skills %}
+                <li class="skill-item">{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <!-- Education -->
+        {% if content.education and content.education|length > 0 %}
+        <section class="sidebar-section">
+            <h2>Education</h2>
+            {% for edu in content.education %}
+            <div class="education-entry">
+                <div class="degree">{{ edu.degree }}</div>
+                {% if edu.institution %}
+                <div class="institution">{{ edu.institution }}</div>
+                {% endif %}
+                {% if edu.graduation_date %}
+                <div class="edu-date">{{ edu.graduation_date }}</div>
+                {% endif %}
+                {% if edu.gpa or edu.honors %}
+                <div class="edu-details">
+                    {% if edu.gpa %}GPA: {{ edu.gpa }}{% endif %}
+                    {% if edu.gpa and edu.honors %}<br>{% endif %}
+                    {% if edu.honors %}{{ edu.honors }}{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Certifications -->
+        {% if content.certifications and content.certifications|length > 0 %}
+        <section class="sidebar-section">
+            <h2>Certifications</h2>
+            {% for cert in content.certifications %}
+            <div class="certification-entry">
+                <div class="cert-name">{{ cert.name }}</div>
+                {% if cert.issuer %}
+                <div class="cert-issuer">{{ cert.issuer }}</div>
+                {% endif %}
+                {% if cert.date %}
+                <div class="cert-date">{{ cert.date }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </aside>
+
+    <!-- Main Content (70%) -->
+    <main class="main-content">
+        <!-- Professional Summary -->
+        {% if content.summary %}
+        <section class="section">
+            <h2>Professional Summary</h2>
+            <div class="summary">
+                <p>{{ content.summary }}</p>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Professional Experience -->
+        {% if content.experiences and content.experiences|length > 0 %}
+        <section class="section">
+            <h2>Professional Experience</h2>
+            {% for exp in content.experiences %}
+            <div class="experience-entry">
+                <div class="job-header">
+                    <div class="job-title">{{ exp.role }}</div>
+                    {% if exp.company %}
+                    <div class="company-name">{{ exp.company }}</div>
+                    {% endif %}
+                </div>
+                <div class="job-meta">
+                    {% if exp.location %}
+                    <span>{{ exp.location }}</span>
+                    {% endif %}
+                    {% if exp.start_date or exp.end_date %}
+                    <span>{{ exp.start_date }}{% if exp.end_date %} - {{ exp.end_date }}{% endif %}</span>
+                    {% endif %}
+                </div>
+                {% if exp.responsibilities and exp.responsibilities|length > 0 %}
+                <ul class="responsibilities">
+                    {% for responsibility in exp.responsibilities %}
+                    <li>{{ responsibility }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

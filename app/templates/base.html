@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Resume{% endblock %}</title>
+    <style>
+        /* Page Setup for PDF Generation */
+        @page {
+            size: letter;
+            margin: 0.75in 0.75in 0.75in 0.75in;
+        }
+
+        /* CSS Reset for WeasyPrint */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base Typography */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000000;
+            background: #ffffff;
+        }
+
+        /* Headings */
+        h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            margin-bottom: 8pt;
+        }
+
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 12pt;
+            margin-bottom: 8pt;
+        }
+
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
+
+        h4 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
+
+        /* Paragraphs */
+        p {
+            margin-bottom: 6pt;
+        }
+
+        /* Lists */
+        ul {
+            margin-left: 20pt;
+            margin-bottom: 8pt;
+        }
+
+        li {
+            margin-bottom: 3pt;
+        }
+
+        /* Page Break Controls */
+        .page-break {
+            page-break-after: always;
+        }
+
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+
+        /* Section Spacing */
+        .section {
+            margin-bottom: 16pt;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            border-bottom: 1pt solid #000000;
+            padding-bottom: 4pt;
+            margin-bottom: 8pt;
+        }
+
+        /* Contact Info */
+        .contact-info {
+            text-align: center;
+            margin-bottom: 16pt;
+        }
+
+        .contact-info p {
+            margin-bottom: 2pt;
+        }
+
+        /* Experience Entry */
+        .experience-entry {
+            margin-bottom: 12pt;
+            page-break-inside: avoid;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4pt;
+        }
+
+        .job-title {
+            font-weight: bold;
+        }
+
+        .company-name {
+            font-weight: bold;
+        }
+
+        .date-range {
+            font-style: italic;
+            color: #333333;
+        }
+
+        /* Education Entry */
+        .education-entry {
+            margin-bottom: 12pt;
+            page-break-inside: avoid;
+        }
+
+        .degree {
+            font-weight: bold;
+        }
+
+        .institution {
+            font-style: italic;
+        }
+
+        /* Skills Section */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8pt;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .skill-item {
+            background: #f0f0f0;
+            padding: 4pt 8pt;
+            border-radius: 3pt;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .font-italic {
+            font-style: italic;
+        }
+
+        .mb-small {
+            margin-bottom: 4pt;
+        }
+
+        .mb-medium {
+            margin-bottom: 8pt;
+        }
+
+        .mb-large {
+            margin-bottom: 16pt;
+        }
+
+        {% block template_styles %}
+        /* Template-specific styles go here */
+        {% endblock %}
+    </style>
+</head>
+<body>
+    {% block content %}
+    <!-- Template content goes here -->
+    {% endblock %}
+</body>
+</html>
