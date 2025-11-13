@@ -33,7 +33,7 @@ supabase==2.3.2
 postgrest==0.14.0
 
 # HTTP Client
-httpx==0.26.0
+httpx==0.25.2
 requests==2.31.0
 
 # Utilities
