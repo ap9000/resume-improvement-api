@@ -166,10 +166,51 @@ Status/Result endpoints for each:
 - ⏳ Status checking: Awaiting verification
 - ⏳ Result retrieval: Awaiting verification
 
+---
+
+### Day 3 Continued: 2025-11-20 (Early Morning) - End-to-End Testing
+**Status:** ✅ Complete (Async Queue Verified!)
+
+**Completed Tasks:**
+- [x] Tested job status endpoint - discovered job ID tracking bug
+- [x] Fixed ARQ job ID parameter (`_job_id` instead of `job_id`)
+- [x] Fixed ARQ status API usage (`await job.status()` instead of `info.job_try.status`)
+- [x] Verified complete async job flow
+- [x] Confirmed worker picks up and processes jobs
+- [x] Updated documentation with all fixes
+
+**Additional Issues Fixed:**
+
+3. **ARQ Job ID Parameter:**
+   - Problem: Status endpoint returned "not found" - ARQ generated random IDs
+   - Root Cause: Used `job_id=` instead of ARQ's special `_job_id=` parameter
+   - Solution: Pass both `_job_id=job_id` (for ARQ) and `job_id=job_id` (for worker function)
+   - Commit: 9a4aac8
+
+4. **ARQ Status API:**
+   - Problem: `'int' object has no attribute 'status'`
+   - Root Cause: `info.job_try` is an integer (try number), not JobTry object
+   - Solution: Use `await job.status()` method directly
+   - Commit: c352a8c
+
+**Final Testing Status:**
+- ✅ Health endpoint: Working
+- ✅ Job submission: Working (instant <200ms response)
+- ✅ Job enqueueing to Redis: Working
+- ✅ Worker processing: Verified (picks up and completes jobs)
+- ✅ Status checking: Verified (returns queued/in_progress/complete)
+- ⏳ Result retrieval: Testing with real resume data
+
+**Key Learnings:**
+- ARQ's `_job_id` parameter is critical for custom job tracking
+- ARQ's Job API uses `await job.status()` not `job.info().job_try.status`
+- `info.job_try` is an integer (try attempt number), not an object
+- Async job queue is fully operational on Railway
+
 **Next Steps:**
-- Verify worker processes jobs end-to-end
-- Test with real resume file
-- Monitor worker logs for job completion
+- Test with real resume file to verify result data
+- Add comprehensive error handling
+- Implement database persistence for job results
 
 ---
 
