@@ -113,7 +113,8 @@ class JobQueue:
         try:
             await pool.enqueue_job(
                 job_function,
-                job_id=job_id,
+                _job_id=job_id,  # ARQ uses _job_id to set the job identifier
+                job_id=job_id,   # Also pass as parameter for worker function
                 **kwargs
             )
             logger.info(f"Enqueued job {job_id} for function {job_function}")
