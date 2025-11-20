@@ -169,7 +169,7 @@ class JobQueue:
             return {
                 "status": status,
                 "job_id": job_id,
-                "result": result.get("data") if result and isinstance(result, dict) else result,
+                "result": result,  # Return full result (includes success, data, or error)
                 "enqueue_time": info.enqueue_time.isoformat() if info and info.enqueue_time else None,
                 "start_time": None,  # ARQ doesn't expose start_time easily
                 "finish_time": None,  # ARQ doesn't expose finish_time easily
