@@ -63,12 +63,15 @@ async def analyze_resume_job(
             resume_improvement_id=resume_improvement_id
         )
 
-        logger.info(f"[Job {job_id}] Analysis complete. Overall score: {result.get('scores', {}).get('overall', 0)}")
+        # Convert Pydantic model to dict
+        result_dict = result.dict() if hasattr(result, 'dict') else result.model_dump()
+
+        logger.info(f"[Job {job_id}] Analysis complete. Overall score: {result_dict.get('scores', {}).get('overall', 0)}")
 
         return {
             "success": True,
             "job_id": job_id,
-            "data": result
+            "data": result_dict
         }
 
     except Exception as e:
