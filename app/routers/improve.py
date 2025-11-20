@@ -19,8 +19,8 @@ limiter = Limiter(key_func=get_remote_address)
 @router.post("/")
 @limiter.limit("10/minute")  # Job submission is lightweight
 async def improve_resume(
-    request: ImproveRequest,
-    fastapi_request: Request
+    improve_request: ImproveRequest,
+    request: Request  # slowapi requires this to be named 'request'
 ) -> Dict[str, Any]:
     """
     Enqueue a resume improvement job (Async Pattern)
@@ -41,15 +41,15 @@ async def improve_resume(
         # Generate unique job ID
         job_id = generate_job_id()
 
-        logger.info(f"Enqueueing improvement job {job_id} for: {request.resume_improvement_id}")
-        logger.info(f"Focus areas: {request.focus_areas}")
+        logger.info(f"Enqueueing improvement job {job_id} for: {improve_request.resume_improvement_id}")
+        logger.info(f"Focus areas: {improve_request.focus_areas}")
 
         # Enqueue job to ARQ worker
         await enqueue_improve_job(
             job_id=job_id,
-            resume_improvement_id=request.resume_improvement_id,
-            content=request.content,
-            focus_areas=request.focus_areas
+            resume_improvement_id=improve_request.resume_improvement_id,
+            content=improve_request.content,
+            focus_areas=improve_request.focus_areas
         )
 
         logger.info(f"Job {job_id} enqueued successfully")

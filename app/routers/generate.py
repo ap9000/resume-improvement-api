@@ -19,8 +19,8 @@ limiter = Limiter(key_func=get_remote_address)
 @router.post("/")
 @limiter.limit("10/minute")  # Job submission is lightweight
 async def generate_resume(
-    request: GenerateRequest,
-    fastapi_request: Request
+    generate_request: GenerateRequest,
+    request: Request  # slowapi requires this to be named 'request'
 ) -> Dict[str, Any]:
     """
     Enqueue a PDF generation job (Async Pattern)
@@ -42,15 +42,15 @@ async def generate_resume(
         # Generate unique job ID
         job_id = generate_job_id()
 
-        logger.info(f"Enqueueing PDF generation job {job_id} with template: {request.template}")
+        logger.info(f"Enqueueing PDF generation job {job_id} with template: {generate_request.template}")
 
         # Enqueue job to ARQ worker
         await enqueue_generate_job(
             job_id=job_id,
-            resume_improvement_id=request.resume_improvement_id,
-            template=request.template.value,  # Convert enum to string
-            content=request.content,
-            user_id=request.user_id
+            resume_improvement_id=generate_request.resume_improvement_id,
+            template=generate_request.template.value,  # Convert enum to string
+            content=generate_request.content,
+            user_id=generate_request.user_id
         )
 
         logger.info(f"Job {job_id} enqueued successfully")
