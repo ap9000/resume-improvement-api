@@ -130,30 +130,51 @@ class JobQueue:
         Returns:
             Dictionary with status information
         """
+        from arq.jobs import JobStatus, Job
+
         pool = await self.get_pool()
 
         try:
-            job_result = await pool.job_result(job_id)
+            # Create Job instance from job_id
+            job = Job(job_id, redis=pool)
 
-            if job_result is None:
+            # Get job info
+            info = await job.info()
+
+            if info is None:
                 return {
                     "status": "not_found",
                     "job_id": job_id
                 }
 
-            # ARQ job result contains: JobStatus enum
-            # JobStatus.deferred, .queued, .in_progress, .complete, .not_found
+            # Map ARQ JobStatus to our status names
+            status_map = {
+                JobStatus.deferred: "queued",
+                JobStatus.queued: "queued",
+                JobStatus.in_progress: "in_progress",
+                JobStatus.complete: "complete",
+                JobStatus.not_found: "not_found",
+            }
+
+            arq_status = info.job_try.status if info.job_try else JobStatus.not_found
+            status = status_map.get(arq_status, "unknown")
+
+            # Get result if complete
+            result = None
+            if status == "complete":
+                result = await job.result(timeout=0.1)
+
             return {
-                "status": job_result.status.name if hasattr(job_result, 'status') else "unknown",
+                "status": status,
                 "job_id": job_id,
-                "result": job_result.result if hasattr(job_result, 'result') else None,
-                "enqueue_time": job_result.enqueue_time if hasattr(job_result, 'enqueue_time') else None,
-                "start_time": job_result.start_time if hasattr(job_result, 'start_time') else None,
-                "finish_time": job_result.finish_time if hasattr(job_result, 'finish_time') else None,
+                "result": result.get("data") if result and isinstance(result, dict) else result,
+                "enqueue_time": info.enqueue_time.isoformat() if info.enqueue_time else None,
+                "start_time": info.job_try.start_time.isoformat() if info.job_try and info.job_try.start_time else None,
+                "finish_time": info.job_try.finish_time.isoformat() if info.job_try and info.job_try.finish_time else None,
             }
 
         except Exception as e:
-            logger.error(f"Failed to get status for job {job_id}: {str(e)}")
+            logger.error(f"Failed to get status for job {job_id}: {str(e)}", exc_info=True)
             return {
                 "status": "error",
                 "job_id": job_id,
