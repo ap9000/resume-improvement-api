@@ -139,10 +139,10 @@ class JobQueue:
             # Create Job instance from job_id
             job = Job(job_id, redis=pool)
 
-            # Get job info
-            info = await job.info()
+            # Get job status (returns JobStatus enum or None)
+            arq_status = await job.status()
 
-            if info is None:
+            if arq_status is None or arq_status == JobStatus.not_found:
                 return {
                     "status": "not_found",
                     "job_id": job_id
@@ -154,10 +154,8 @@ class JobQueue:
                 JobStatus.queued: "queued",
                 JobStatus.in_progress: "in_progress",
                 JobStatus.complete: "complete",
-                JobStatus.not_found: "not_found",
             }
 
-            arq_status = info.job_try.status if info.job_try else JobStatus.not_found
             status = status_map.get(arq_status, "unknown")
 
             # Get result if complete
@@ -165,13 +163,16 @@ class JobQueue:
             if status == "complete":
                 result = await job.result(timeout=0.1)
 
+            # Get job info for timestamps
+            info = await job.info()
+
             return {
                 "status": status,
                 "job_id": job_id,
                 "result": result.get("data") if result and isinstance(result, dict) else result,
-                "enqueue_time": info.enqueue_time.isoformat() if info.enqueue_time else None,
-                "start_time": info.job_try.start_time.isoformat() if info.job_try and info.job_try.start_time else None,
-                "finish_time": info.job_try.finish_time.isoformat() if info.job_try and info.job_try.finish_time else None,
+                "enqueue_time": info.enqueue_time.isoformat() if info and info.enqueue_time else None,
+                "start_time": None,  # ARQ doesn't expose start_time easily
+                "finish_time": None,  # ARQ doesn't expose finish_time easily
             }
 
         except Exception as e:
