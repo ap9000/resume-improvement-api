@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     # Gemini AI
     GEMINI_API_KEY: str = ""  # Optional, for cost optimization
 
+    # Resume Parser (Supabase Edge Function)
+    VITE_RESUME_PARSER_API_URL: str = ""  # Optional, defaults to Supabase functions URL
+    VITE_RESUME_PARSER_API_KEY: str = ""  # Optional, defaults to Supabase anon key
+
     # Redis & Job Queue
     REDIS_URL: str = "redis://localhost:6379"
 
