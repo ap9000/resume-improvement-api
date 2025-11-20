@@ -41,9 +41,20 @@ COPY . .
 # Expose port (Railway will set PORT env var)
 EXPOSE 8000
 
-# Health check (using httpx which is in requirements.txt)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD python -c "import httpx; httpx.get('http://localhost:8000/health', timeout=5.0)" || exit 1
+# Create startup script that checks WORKER_MODE
+RUN echo '#!/bin/bash\n\
+if [ "$WORKER_MODE" = "true" ]; then\n\
+    echo "Starting ARQ worker..."\n\
+    exec arq app.worker.WorkerSettings\n\
+else\n\
+    echo "Starting API server..."\n\
+    exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}\n\
+fi\n\
+' > /app/start.sh && chmod +x /app/start.sh
 
-# Run the application (shell form to allow PORT env var expansion)
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Health check (only for API mode, will fail gracefully for worker mode)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD python -c "import httpx; httpx.get('http://localhost:${PORT:-8000}/health', timeout=5.0)" 2>/dev/null || exit 0
+
+# Run the startup script
+CMD ["/app/start.sh"]

@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Redis for local development
+  redis:
+    image: redis:7-alpine
+    container_name: resume-engine-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # FastAPI Application (API Gateway)
+  api:
+    build: .
+    container_name: resume-engine-api
+    ports:
+      - "8000:8000"
+    environment:
+      # Override Redis URL for local development
+      - REDIS_URL=redis://redis:6379
+      - WORKER_MODE=false
+      - ENVIRONMENT=development
+      # Load other variables from .env file
+      - API_KEY=${API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./app:/app/app
+      - ./templates:/app/templates
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ARQ Worker (Background Job Processor)
+  worker:
+    build: .
+    container_name: resume-engine-worker
+    environment:
+      # Override Redis URL for local development
+      - REDIS_URL=redis://redis:6379
+      - WORKER_MODE=true
+      - ENVIRONMENT=development
+      # Load other variables from .env file
+      - API_KEY=${API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ARQ_MAX_JOBS=${ARQ_MAX_JOBS:-10}
+      - ARQ_JOB_TIMEOUT=${ARQ_JOB_TIMEOUT:-300}
+    volumes:
+      - ./app:/app/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: arq app.worker.WorkerSettings
+
+volumes:
+  redis_data:
+    driver: local

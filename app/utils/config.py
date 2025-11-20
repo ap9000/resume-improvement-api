@@ -21,6 +21,17 @@ class Settings(BaseSettings):
     # Claude AI
     ANTHROPIC_API_KEY: str
 
+    # Gemini AI
+    GEMINI_API_KEY: str = ""  # Optional, for cost optimization
+
+    # Redis & Job Queue
+    REDIS_URL: str = "redis://localhost:6379"
+
+    # Worker Configuration
+    WORKER_MODE: bool = False
+    ARQ_MAX_JOBS: int = 10  # Max concurrent jobs per worker
+    ARQ_JOB_TIMEOUT: int = 300  # 5 minutes timeout per job
+
     # Rate Limiting
     RATE_LIMIT_PER_MINUTE: int = 10
     RATE_LIMIT_PER_HOUR: int = 100

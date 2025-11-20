@@ -21,7 +21,12 @@ nltk==3.8.1
 
 # AI/LLM Integration
 anthropic==0.18.1  # Claude API
+google-generativeai==0.3.2  # Gemini API
 tenacity==8.2.3  # Retry logic with exponential backoff
+
+# Job Queue and Background Tasks
+arq==0.25.0  # Async task queue built on asyncio
+redis==5.0.1  # Redis client for job queue
 
 # PDF Generation
 weasyprint==60.2  # HTML to PDF conversion
@@ -46,6 +51,7 @@ passlib[bcrypt]==1.7.4
 
 # Logging and Monitoring
 python-json-logger==2.0.7
+structlog==24.1.0  # Structured logging for better observability
 
 # Date handling
 python-dateutil==2.8.2
