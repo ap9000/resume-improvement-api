@@ -214,7 +214,7 @@ class ResumeAnalyzer:
 
     async def _parse_resume(self, resume_url: str, user_id: Optional[str]) -> Dict[str, Any]:
         """
-        Parse resume content from URL using existing Railway parser
+        Parse resume content from URL using internal PyMuPDF parser
 
         Args:
             resume_url: Public URL to resume file
@@ -223,32 +223,12 @@ class ResumeAnalyzer:
         Returns:
             Parsed resume content dictionary
         """
-        # Use existing Railway parser API (same one frontend uses)
-        parser_url = getattr(self.settings, 'VITE_RESUME_PARSER_API_URL', None) or self.settings.SUPABASE_URL.replace('/rest/', '/functions/v1/')
-        parser_key = getattr(self.settings, 'VITE_RESUME_PARSER_API_KEY', None) or self.settings.SUPABASE_SERVICE_ROLE_KEY
+        from app.services.parser import ResumeParser
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                f"{parser_url}/parse-resume",
-                json={
-                    "url": resume_url,
-                    "metadata": {
-                        "user_id": user_id or "analyzer",
-                        "source": "resume_improvement_api"
-                    }
-                },
-                headers={
-                    "Authorization": f"Bearer {parser_key}",
-                    "Content-Type": "application/json"
-                }
-            )
+        parser = ResumeParser()
+        parsed_data = await parser.parse_resume(resume_url, user_id)
 
-            if response.status_code != 200:
-                logger.error(f"Resume parsing failed: {response.status_code} - {response.text}")
-                raise Exception(f"Failed to parse resume: {response.status_code}")
-
-            data = response.json()
-            return data.get("data", data)
+        return parsed_data
 
     def _score_formatting(self, content: Dict) -> Tuple[float, List[Issue]]:
         """
